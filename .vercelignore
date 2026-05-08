@@ -1,0 +1,8 @@
+.env
+.env.*
+api/.env
+api/.env.*
+.venv
+api/data
+*.db
+
