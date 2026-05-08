@@ -1,21 +1,27 @@
 # TROCASSATO (MVP)
 
-Marketplace com “KYC social” por convite, focado em confiança por reputação e simulação de fluxo em regtest.
+Marketplace com “KYC social” por convite, focado em confiança por reputação e simulação de fluxo (DEV) usando SQLite.
 
-Este repositório inclui documentação passo a passo para instalar e usar em uma **VM Lubuntu 26.04 LTS**.
+Este repositório contém:
 
-## Componentes (DEV)
+- Código-fonte (frontend + backend)
+- Documentação técnica e procedimentos de instalação
+- Arquivos de configuração e exemplos de variáveis de ambiente
 
-- Frontend (Usuário): rotas `/login`, `/catalogo`, `/negocio/:id`, `/perfil`, `/notificacoes`, `/convidar`
+## Componentes
+
+- Frontend (Usuário): rotas `/login`, `/catalogo`, `/negocio/:id`, `/perfil`, `/notificacoes`, `/convidar`, `/meus-negocios`
 - Frontend (Admin): rotas `/admin/login`, `/admin`, `/admin/pessoas-convites`, `/admin/simulador`
 - Backend (API): FastAPI + SQLite (arquivo `.db`) com autenticação por cookie `HttpOnly`
 
-## Requisitos
+## Pré-requisitos
 
-- Node.js (para frontend)
-- Python 3.10+ (para backend)
+- Node.js 20+
+- Python 3.10+
+- Git
+- (Opcional) DB Browser for SQLite para visualizar o banco
 
-## Documentação (para leitura e instalação)
+## Documentação (leitura e instalação)
 
 - Visão geral: [docs/00_VISÃO_GERAL.md](docs/00_VISÃO_GERAL.md)
 - Instalação Lubuntu 26.04: [docs/01_INSTALACAO_LUBUNTU_26_04.md](docs/01_INSTALACAO_LUBUNTU_26_04.md)
@@ -26,19 +32,39 @@ Este repositório inclui documentação passo a passo para instalar e usar em um
 - Segurança: [docs/06_SEGURANCA.md](docs/06_SEGURANCA.md)
 - Versionamento GitHub: [docs/07_VERSIONAMENTO_GITHUB.md](docs/07_VERSIONAMENTO_GITHUB.md)
 
-## Configuração
+## Configuração do ambiente (DEV)
 
-- Frontend: copie `.env.example` para `.env`.
-  - Se `VITE_API_BASE_URL` ficar vazio (recomendado no DEV), o frontend usa `/api` e o Vite faz proxy para `http://127.0.0.1:8000`.
-- Backend: copie `api/.env.example` para `api/.env` e ajuste `AUTH_JWT_SECRET` e a senha do admin.
+### 1) Frontend
 
-Senha do admin (escolha 1, mais simples no DEV):
+Copie o exemplo e mantenha `VITE_API_BASE_URL` vazio (recomendado) para usar o proxy do Vite.
 
-- `ADMIN_PASSWORD=123`
+```bash
+cp .env.example .env
+```
 
-Senha do admin (escolha 2, recomendado):
+Variáveis:
 
-- use `ADMIN_PASSWORD_HASH`
+- `VITE_API_BASE_URL`:
+  - vazio (recomendado): o frontend usa `/api` e o Vite faz proxy para `http://127.0.0.1:8000`
+  - opcional: pode apontar para a API (ex.: `http://127.0.0.1:8000`)
+
+### 2) Backend
+
+Copie o exemplo:
+
+```bash
+cp api/.env.example api/.env
+```
+
+Variáveis:
+
+- `APP_ENV`: `dev`
+- `DATABASE_PATH`: caminho do SQLite (recomendado: `./data/trocasato.db`)
+- `AUTH_JWT_SECRET`: obrigatório
+- `AUTH_TOKEN_TTL_SECONDS`: opcional (default `86400`)
+- `ADMIN_USERNAME`: default `admin`
+- Senha do admin (escolha 1, mais simples no DEV): `ADMIN_PASSWORD=123`
+- Senha do admin (escolha 2, recomendado): `ADMIN_PASSWORD_HASH=<hash>`
 
 Para gerar `ADMIN_PASSWORD_HASH`:
 
@@ -51,9 +77,8 @@ python api/scripts/hash_password.py "sua-senha"
 Backend:
 
 ```bash
-python -m pip install -r api/requirements.txt
-cd api
-uvicorn api.app.main:app --host 0.0.0.0 --port 8000 --reload
+python -m pip install -r requirements.txt
+python -m uvicorn api.app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 Frontend:
@@ -62,6 +87,28 @@ Frontend:
 npm install
 npm run dev
 ```
+
+Atalhos:
+
+- Linux: `bash scripts/dev.sh`
+- Windows: `powershell -ExecutionPolicy Bypass -File scripts/dev.ps1`
+
+URLs:
+
+- Frontend: `http://127.0.0.1:5173/`
+- Admin: `http://127.0.0.1:5173/admin/login`
+- API health: `http://127.0.0.1:8000/health`
+- Swagger: `http://127.0.0.1:8000/docs`
+
+## Scripts úteis
+
+- Build frontend: `npm run build`
+- Rodar checks: `npm run check`
+- Rodar testes backend: `python -m unittest discover -s api/tests`
+
+## Deploy
+
+Há arquivos de suporte para deploy em Vercel (frontend + backend serverless), mas SQLite em serverless é volátil. Para uso real, substitua por banco persistente.
 
 ## Qualidade
 
@@ -72,6 +119,6 @@ npm test
 python -m unittest discover -s api/tests
 ```
 
-## Documentos
+## Documentos internos
 
-Os requisitos, arquitetura e design estão em `.trae/documents/`.
+Os requisitos, arquitetura e design originais também estão em `.trae/documents/`.
