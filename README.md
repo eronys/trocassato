@@ -119,6 +119,3 @@ npm test
 python -m unittest discover -s api/tests
 ```
 
-## Documentos internos
-
-Os requisitos, arquitetura e design originais também estão em `.trae/documents/`.
