@@ -2,6 +2,8 @@
 
 Marketplace com “KYC social” por convite, focado em confiança por reputação e simulação de fluxo (DEV) usando SQLite.
 
+Vídeo de apresentação: https://drive.google.com/file/d/13EjJfTcxCKFctn755SYuoGTCIw006Ylk/view?usp=drive_link
+
 Este repositório contém:
 
 - Código-fonte (frontend + backend)
