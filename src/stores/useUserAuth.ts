@@ -37,7 +37,7 @@ export const useUserAuth = create<UserAuthState>((set, get) => ({
   login: async (email, password) => {
     set({ loading: true, error: null });
     try {
-      await apiPost<{ ok: boolean }>("/api/auth/login", { email, password });
+      await apiPost<{ ok: boolean }>("/auth/login", { email, password });
       await get().refresh();
       return true;
     } catch (err) {
@@ -50,7 +50,7 @@ export const useUserAuth = create<UserAuthState>((set, get) => ({
   logout: async () => {
     set({ loading: true, error: null });
     try {
-      await apiPost<{ ok: boolean }>("/api/auth/logout");
+      await apiPost<{ ok: boolean }>("/auth/logout");
       set({ user: null });
     } finally {
       set({ loading: false });
@@ -59,7 +59,7 @@ export const useUserAuth = create<UserAuthState>((set, get) => ({
   refresh: async () => {
     set({ loading: true, error: null });
     try {
-      const me = await apiGet<PublicUser>("/api/auth/me");
+      const me = await apiGet<PublicUser>("/auth/me");
       set({ user: me });
     } catch {
       set({ user: null });

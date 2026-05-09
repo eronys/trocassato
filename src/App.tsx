@@ -4,7 +4,8 @@ import UserLayout from "@/components/layouts/UserLayout";
 import AdminLogin from "@/pages/admin/AdminLogin";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminPeopleInvites from "@/pages/admin/AdminPeopleInvites";
-import AdminSimulator from "@/pages/admin/AdminSimulator";
+import AdminTransactions from "@/pages/admin/AdminTransactions";
+import AdminMaintenance from "@/pages/admin/AdminMaintenance";
 import Catalog from "@/pages/user/Catalog";
 import HostNotifications from "@/pages/user/HostNotifications";
 import InvitePeople from "@/pages/user/InvitePeople";
@@ -36,7 +37,8 @@ export default function App() {
         <Route element={<AdminLayout />}>
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/pessoas-convites" element={<AdminPeopleInvites />} />
-          <Route path="/admin/simulador" element={<AdminSimulator />} />
+          <Route path="/admin/transacoes" element={<AdminTransactions />} />
+          <Route path="/admin/administracao" element={<AdminMaintenance />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/catalogo" replace />} />

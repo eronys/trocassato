@@ -15,10 +15,17 @@ type BusinessItem = {
   image_url: string | null;
   seller_user_id: string;
   created_at: string;
+  seller_full_name: string;
+  seller_level: string;
+  seller_stars: number;
 };
 
 function formatBrl(cents: number) {
   return (cents / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+
+function Stars({ n }: { n: number }) {
+  return <span className="text-amber-400">{"⭐".repeat(Math.min(4, Math.max(1, n)))}</span>;
 }
 
 export default function Catalog() {
@@ -27,16 +34,22 @@ export default function Catalog() {
   const [error, setError] = useState<string | null>(null);
   const isPending = useMemo(() => auth.user?.status === "PENDING_APPROVAL", [auth.user?.status]);
 
+  const refresh = async () => {
+    try {
+      const data = await apiGet<BusinessItem[]>("/catalog/items");
+      setItems(data);
+    } catch (err) {
+      const e = err as ApiError;
+      setError(e.message);
+    }
+  };
+
   useEffect(() => {
-    (async () => {
-      try {
-        const data = await apiGet<BusinessItem[]>("/api/catalog/items");
-        setItems(data);
-      } catch (err) {
-        const e = err as ApiError;
-        setError(e.message);
-      }
-    })();
+    refresh();
+    const interval = setInterval(() => {
+      refresh();
+    }, 10000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -58,8 +71,13 @@ export default function Catalog() {
                 <div>
                   <div className="text-sm font-semibold text-zinc-100">{item.title}</div>
                   <div className="mt-1 line-clamp-2 text-xs text-zinc-400">{item.description}</div>
+                  <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-zinc-400">
+                    <span className="text-zinc-300">{item.seller_full_name}</span>
+                    <Stars n={item.seller_stars} />
+                    <span className="text-zinc-600">({item.seller_level})</span>
+                  </div>
                 </div>
-                {isPending ? <Lock className="h-4 w-4 text-zinc-500" /> : null}
+                {isPending ? <Lock className="h-4 w-4 shrink-0 text-zinc-500" /> : null}
               </div>
               <div className="mt-4 flex items-end justify-between">
                 <div>

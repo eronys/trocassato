@@ -12,6 +12,7 @@ type PublicUser = {
   status: string;
   level: string;
   invited_by_user_id: string | null;
+  wallet_name: string;
   is_host: boolean;
   created_at: string;
 };
@@ -29,9 +30,9 @@ export default function AdminDashboard() {
   useEffect(() => {
     (async () => {
       try {
-        const g = await apiGet<Graph>("/api/admin/invite-graph");
+        const g = await apiGet<Graph>("/admin/invite-graph");
         setData(g);
-        const u = await apiGet<PublicUser[]>("/api/admin/users");
+        const u = await apiGet<PublicUser[]>("/admin/users");
         setUsers(u);
       } catch (err) {
         const e = err as ApiError;
@@ -41,7 +42,7 @@ export default function AdminDashboard() {
   }, []);
 
   const refreshUsers = async () => {
-    const u = await apiGet<PublicUser[]>("/api/admin/users");
+    const u = await apiGet<PublicUser[]>("/admin/users");
     setUsers(u);
   };
 
@@ -68,21 +69,24 @@ export default function AdminDashboard() {
                   <div className="text-sm font-semibold">{u.full_name}</div>
                   <div className="text-xs text-zinc-500">{u.email}</div>
                   <div className="mt-1 text-xs text-zinc-600">{u.status} • {u.level}{u.is_host ? " • host" : ""}</div>
+                  <div className="mt-1 text-xs text-zinc-500">wallet: <span className="font-mono text-zinc-300">{u.wallet_name}</span></div>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
+                  {u.status !== "APPROVED" ? (
+                    <Button
+                      variant="ghost"
+                      onClick={async () => {
+                        await apiPost(`/admin/users/${u.id}/status`, { status: "APPROVED" });
+                        await refreshUsers();
+                      }}
+                    >
+                      Aprovar
+                    </Button>
+                  ) : null}
                   <Button
                     variant="ghost"
                     onClick={async () => {
-                      await apiPost(`/api/admin/users/${u.id}/status`, { status: "APPROVED" });
-                      await refreshUsers();
-                    }}
-                  >
-                    Aprovar
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    onClick={async () => {
-                      await apiPost(`/api/admin/users/${u.id}/host`, { is_host: !u.is_host });
+                      await apiPost(`/admin/users/${u.id}/host`, { is_host: !u.is_host });
                       await refreshUsers();
                     }}
                   >
@@ -96,7 +100,7 @@ export default function AdminDashboard() {
                       onBlur={async (e) => {
                         const v = e.target.value.trim();
                         if (!v) return;
-                        await apiPost(`/api/admin/users/${u.id}/level`, { level: v });
+                        await apiPost(`/admin/users/${u.id}/level`, { level: v });
                         await refreshUsers();
                       }}
                     />
@@ -104,7 +108,7 @@ export default function AdminDashboard() {
                   <Button
                     variant="danger"
                     onClick={async () => {
-                      await apiPost("/api/admin/suspend", { user_id: u.id });
+                      await apiPost("/admin/suspend", { user_id: u.id });
                       await refreshUsers();
                     }}
                   >

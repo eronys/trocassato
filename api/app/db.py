@@ -4,7 +4,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Iterator
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, sessionmaker
 
@@ -22,6 +22,16 @@ def get_engine() -> Engine:
   settings = get_settings()
   _ensure_parent_dir(settings.database_path)
   return create_engine(f"sqlite:///{settings.database_path}", connect_args={"check_same_thread": False})
+
+
+def ensure_sqlite_schema() -> None:
+  """Migração mínima (sem Alembic) para DEV/SQLite."""
+  eng = get_engine()
+  with eng.begin() as conn:
+    cols = conn.execute(text("PRAGMA table_info(business_items)")).fetchall()
+    names = {r[1] for r in cols}  # (cid, name, type, notnull, dflt_value, pk)
+    if "is_deleted" not in names:
+      conn.execute(text("ALTER TABLE business_items ADD COLUMN is_deleted INTEGER NOT NULL DEFAULT 0"))
 
 
 @lru_cache

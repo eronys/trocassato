@@ -19,7 +19,7 @@ export default function HostNotifications() {
 
   const refresh = async () => {
     try {
-      const data = await apiGet<PublicUser[]>("/api/host/pending");
+      const data = await apiGet<PublicUser[]>("/host/pending");
       setItems(data);
       setError(null);
     } catch (err) {
@@ -30,6 +30,10 @@ export default function HostNotifications() {
 
   useEffect(() => {
     refresh();
+    const interval = setInterval(() => {
+      refresh();
+    }, 10000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -51,7 +55,7 @@ export default function HostNotifications() {
                   onClick={async () => {
                     setLoadingId(u.id);
                     try {
-                      await apiPost("/api/host/approve", { user_id: u.id, approve: false });
+                      await apiPost("/host/approve", { user_id: u.id, approve: false });
                       await refresh();
                     } finally {
                       setLoadingId(null);
@@ -65,7 +69,7 @@ export default function HostNotifications() {
                   onClick={async () => {
                     setLoadingId(u.id);
                     try {
-                      await apiPost("/api/host/approve", { user_id: u.id, approve: true });
+                      await apiPost("/host/approve", { user_id: u.id, approve: true });
                       await refresh();
                     } finally {
                       setLoadingId(null);

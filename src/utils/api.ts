@@ -64,3 +64,40 @@ export async function apiPost<T>(path: string, body?: unknown): Promise<T> {
     throw err;
   }
 }
+
+export async function apiPut<T>(path: string, body?: unknown): Promise<T> {
+  const url = `${getApiBaseUrl()}${path}`;
+  try {
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: body === undefined ? undefined : JSON.stringify(body),
+    });
+    if (!res.ok) throw await parseError(res);
+    return (await res.json()) as T;
+  } catch (err) {
+    if (err instanceof TypeError) {
+      throw { status: 0, message: "Não foi possível conectar à API. Verifique se o backend está rodando na porta 8000." } satisfies ApiError;
+    }
+    throw err;
+  }
+}
+
+export async function apiDelete<T>(path: string): Promise<T> {
+  const url = `${getApiBaseUrl()}${path}`;
+  try {
+    const res = await fetch(url, {
+      method: "DELETE",
+      credentials: "include",
+    });
+    if (!res.ok) throw await parseError(res);
+    // alguns endpoints retornam {} / {ok:true}
+    return (await res.json()) as T;
+  } catch (err) {
+    if (err instanceof TypeError) {
+      throw { status: 0, message: "Não foi possível conectar à API. Verifique se o backend está rodando na porta 8000." } satisfies ApiError;
+    }
+    throw err;
+  }
+}

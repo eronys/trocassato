@@ -1,12 +1,13 @@
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
 from ..db import get_db
 from ..deps import require_admin
-from ..models import Invitation, User
+from ..enrich import transaction_out
+from ..models import BusinessItem, Invitation, Transaction, User
 from ..schemas import (
   AdminSetHostIn,
   AdminSetUserLevelIn,
@@ -16,10 +17,11 @@ from ..schemas import (
   InvitationOut,
   InviteGraphOut,
   PublicUser,
+  TransactionOut,
 )
 
 
-router = APIRouter(prefix="/api/admin", tags=["admin"])
+router = APIRouter(prefix="/admin", tags=["admin"])
 
 
 @router.post("/invitations", response_model=InvitationOut)
@@ -108,3 +110,49 @@ def invite_graph(_admin=Depends(require_admin), db: Session = Depends(get_db)):
     if u.invited_by_user_id:
       edges.append((u.invited_by_user_id, u.id))
   return InviteGraphOut(nodes=nodes, edges=edges)
+
+
+@router.get("/transactions", response_model=list[TransactionOut])
+def list_transactions(status: str | None = None, _admin=Depends(require_admin), db: Session = Depends(get_db)):
+  q = select(Transaction).order_by(Transaction.created_at.desc())
+  if status:
+    q = q.where(Transaction.status == status)
+  txs = db.execute(q).scalars().all()
+  return [transaction_out(db, t) for t in txs]
+
+
+@router.post("/transactions/{tx_id}/cancel")
+def cancel_transaction(tx_id: str, _admin=Depends(require_admin), db: Session = Depends(get_db)):
+  tx = db.get(Transaction, tx_id)
+  if not tx:
+    raise HTTPException(status_code=404, detail="Transação não encontrada")
+  if tx.status != "BROADCAST":
+    raise HTTPException(status_code=400, detail="Só é possível cancelar transações em andamento")
+  tx.status = "CANCELLED"
+  db.add(tx)
+  db.commit()
+  return {"ok": True}
+
+
+@router.post("/maintenance/clear-transactions")
+def maintenance_clear_transactions(_admin=Depends(require_admin), db: Session = Depends(get_db)):
+  db.execute(delete(Transaction))
+  db.commit()
+  return {"ok": True}
+
+
+@router.post("/maintenance/clear-transactions-items")
+def maintenance_clear_transactions_items(_admin=Depends(require_admin), db: Session = Depends(get_db)):
+  db.execute(delete(Transaction))
+  db.execute(delete(BusinessItem))
+  db.commit()
+  return {"ok": True}
+
+
+@router.post("/maintenance/clear-all")
+def maintenance_clear_all(_admin=Depends(require_admin), db: Session = Depends(get_db)):
+  db.execute(delete(Transaction))
+  db.execute(delete(BusinessItem))
+  db.execute(delete(User))
+  db.commit()
+  return {"ok": True}

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import Button from "@/components/ui/Button";
@@ -13,6 +13,10 @@ export default function AdminLogin() {
   const nav = useNavigate();
   const [params] = useSearchParams();
   const next = useMemo(() => params.get("next") || "/admin", [params]);
+
+  useEffect(() => {
+    document.title = "Trocassato Admin";
+  }, []);
 
   return (
     <div className="min-h-screen bg-black text-zinc-100">

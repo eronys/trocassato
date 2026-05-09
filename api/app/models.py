@@ -58,6 +58,7 @@ class BusinessItem(Base):
   price_brl_cents: Mapped[int] = mapped_column(Integer, nullable=False)
   price_sats: Mapped[int] = mapped_column(Integer, nullable=False)
   image_url: Mapped[str | None] = mapped_column(String, nullable=True)
+  is_deleted: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
   created_at: Mapped[dt.datetime] = mapped_column(DateTime, nullable=False, default=dt.datetime.utcnow)
 
 

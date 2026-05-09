@@ -23,7 +23,7 @@ export const useAdminAuth = create<AdminAuthState>((set) => ({
   login: async (username, password) => {
     set({ loading: true, error: null });
     try {
-      await apiPost<{ ok: boolean }>("/api/admin/auth/login", { username, password });
+      await apiPost<{ ok: boolean }>("/admin/auth/login", { username, password });
       set({ isAuthed: true });
       return true;
     } catch (err) {
@@ -36,7 +36,7 @@ export const useAdminAuth = create<AdminAuthState>((set) => ({
   logout: async () => {
     set({ loading: true, error: null });
     try {
-      await apiPost<{ ok: boolean }>("/api/admin/auth/logout");
+      await apiPost<{ ok: boolean }>("/admin/auth/logout");
     } finally {
       set({ isAuthed: false, loading: false });
     }

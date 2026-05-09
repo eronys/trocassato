@@ -1,5 +1,6 @@
 import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Receipt, Settings } from "lucide-react";
 import { LogOut } from "lucide-react";
 
 import Button from "@/components/ui/Button";
@@ -15,9 +16,13 @@ export default function AdminLayout() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    document.title = "Trocassato Admin";
+  }, []);
+
+  useEffect(() => {
     (async () => {
       try {
-        await apiGet("/api/admin/auth/me");
+        await apiGet("/admin/auth/me");
         setAuthed(true);
       } catch {
         setAuthed(false);
@@ -61,12 +66,26 @@ export default function AdminLayout() {
               Pessoas & Convites
             </NavLink>
             <NavLink
-              to="/admin/simulador"
+              to="/admin/transacoes"
               className={({ isActive }) =>
                 `rounded-xl px-3 py-2 text-sm ${isActive ? "bg-zinc-900" : "hover:bg-zinc-950"}`
               }
             >
-              Simulador
+              <span className="inline-flex items-center gap-2">
+                <Receipt className="h-4 w-4" />
+                Transações
+              </span>
+            </NavLink>
+            <NavLink
+              to="/admin/administracao"
+              className={({ isActive }) =>
+                `rounded-xl px-3 py-2 text-sm ${isActive ? "bg-zinc-900" : "hover:bg-zinc-950"}`
+              }
+            >
+              <span className="inline-flex items-center gap-2">
+                <Settings className="h-4 w-4" />
+                Administração
+              </span>
             </NavLink>
             <Button
               variant="ghost"

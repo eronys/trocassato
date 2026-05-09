@@ -10,6 +10,7 @@ class AuthFlowTests(unittest.IsolatedAsyncioTestCase):
       os.environ["APP_ENV"] = "dev"
       os.environ["DATABASE_PATH"] = db_path
       os.environ["AUTH_JWT_SECRET"] = "test-secret"
+      os.environ["BITCOIN_SKIP_INTEGRATION"] = "1"
 
       from passlib.context import CryptContext
 

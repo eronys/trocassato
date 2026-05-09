@@ -45,7 +45,7 @@ cd trocasato
 cp .env.example .env
 ```
 
-Deixe `VITE_API_BASE_URL` vazio (recomendado no DEV). Assim o frontend usa `/api` com proxy do Vite.
+Defina explícitamente `VITE_API_BASE_URL=/api` (recomendado no DEV). Assim o frontend usa `/api` e a comunicação ocorre via proxy do Vite sem quebrar o acesso ao backend.
 
 ### 5.2 Backend
 
@@ -74,8 +74,12 @@ python -m pip install -r requirements.txt
 Suba o backend:
 
 ```bash
-python -m uvicorn api.app.main:app --host 0.0.0.0 --port 8000 --reload
+uvicorn api.app.main:app --reload --host 0.0.0.0 --port 8000
 ```
+
+Swagger API disponível em:
+http://localhost:8000/docs
+
 
 Teste:
 
@@ -90,6 +94,7 @@ Em outro terminal:
 ```bash
 cd trocasato
 npm install
+
 npm run dev -- --host 0.0.0.0 --port 5173
 ```
 

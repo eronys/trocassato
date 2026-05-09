@@ -22,18 +22,17 @@ export default function AdminPeopleInvites() {
   const [error, setError] = useState<string | null>(null);
   const [personName, setPersonName] = useState("");
   const [personEmail, setPersonEmail] = useState("");
-  const [personCpf, setPersonCpf] = useState("");
   const [query, setQuery] = useState("");
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return items;
-    return items.filter((i) => `${i.person_name} ${i.person_email} ${i.person_cpf || ""}`.toLowerCase().includes(q));
+    return items.filter((i) => `${i.person_name} ${i.person_email}`.toLowerCase().includes(q));
   }, [items, query]);
 
   const refresh = async () => {
     try {
-      const data = await apiGet<Invitation[]>("/api/admin/invitations");
+      const data = await apiGet<Invitation[]>("/admin/invitations");
       setItems(data);
       setError(null);
     } catch (err) {
@@ -58,19 +57,18 @@ export default function AdminPeopleInvites() {
       <Card>
         <div className="text-sm font-semibold">Cadastrar pessoa</div>
         <form
-          className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-3"
+          className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2"
           onSubmit={async (e) => {
             e.preventDefault();
             try {
-              await apiPost("/api/admin/invitations", {
+              await apiPost("/admin/invitations", {
                 person_name: personName,
                 person_email: personEmail,
-                person_cpf: personCpf.length ? personCpf : null,
+                person_cpf: null,
                 invited_by_user_id: null,
               });
               setPersonName("");
               setPersonEmail("");
-              setPersonCpf("");
               await refresh();
             } catch (err) {
               const e2 = err as ApiError;
@@ -86,11 +84,7 @@ export default function AdminPeopleInvites() {
             <div className="text-xs text-zinc-400">E-mail</div>
             <Input value={personEmail} onChange={(e) => setPersonEmail(e.target.value)} type="email" />
           </div>
-          <div className="space-y-1">
-            <div className="text-xs text-zinc-400">CPF (opcional)</div>
-            <Input value={personCpf} onChange={(e) => setPersonCpf(e.target.value.replace(/\D/g, "").slice(0, 11))} />
-          </div>
-          <div className="md:col-span-3">
+          <div className="md:col-span-2">
             <Button type="submit">Cadastrar pessoa</Button>
           </div>
         </form>
@@ -117,6 +111,7 @@ export default function AdminPeopleInvites() {
                   </div>
                   <Button
                     variant="ghost"
+                    disabled={i.status !== "CREATED" || !!i.used_at}
                     onClick={async () => {
                       await navigator.clipboard.writeText(link);
                     }}

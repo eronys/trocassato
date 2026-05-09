@@ -26,6 +26,20 @@ class Settings(BaseSettings):
 
   coingecko_base_url: str = Field(default="https://api.coingecko.com/api/v3", validation_alias="COINGECKO_BASE_URL")
 
+  # Bitcoin Core (regtest em DEV). `datadir` é só documentação; o RPC usa host/porta.
+  bitcoin_skip_integration: bool = Field(default=False, validation_alias="BITCOIN_SKIP_INTEGRATION")
+  bitcoin_rpc_host: str = Field(default="127.0.0.1", validation_alias="BITCOIN_RPC_HOST")
+  bitcoin_rpc_port: int = Field(default=18443, validation_alias="BITCOIN_RPC_PORT")
+  bitcoin_rpc_user: str = Field(default="dev", validation_alias="BITCOIN_RPC_USER")
+  bitcoin_rpc_password: str = Field(default="devmode", validation_alias="BITCOIN_RPC_PASSWORD")
+  bitcoin_datadir: str | None = Field(
+    default="/home/dev/bitcoin-regtest-node1",
+    validation_alias="BITCOIN_RPC_DATADIR",
+  )
+  bitcoin_zmq_rawtx: str = Field(default="tcp://127.0.0.1:28332", validation_alias="BITCOIN_ZMQ_RAWTX")
+  bitcoin_zmq_rawblock: str = Field(default="tcp://127.0.0.1:28333", validation_alias="BITCOIN_ZMQ_RAWBLOCK")
+  bitcoin_regtest_fund_blocks: int = Field(default=101, validation_alias="BITCOIN_REGTEST_FUND_BLOCKS")
+
   model_config = SettingsConfigDict(
     env_file=str(Path(__file__).resolve().parents[1] / ".env"),
     env_file_encoding="utf-8",

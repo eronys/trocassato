@@ -12,7 +12,7 @@ Este repositório contém:
 
 - Frontend (Usuário): rotas `/login`, `/catalogo`, `/negocio/:id`, `/perfil`, `/notificacoes`, `/convidar`, `/meus-negocios`
 - Frontend (Admin): rotas `/admin/login`, `/admin`, `/admin/pessoas-convites`, `/admin/simulador`
-- Backend (API): FastAPI + SQLite (arquivo `.db`) com autenticação por cookie `HttpOnly`
+- Backend (API): FastAPI + SQLite (arquivo `.db`) com autenticação por cookie `HttpOnly`. Integração modernizada com nós recentes do Bitcoin Core via RPC dicts (substituindo métodos obsoletos).
 
 ## Pré-requisitos
 
@@ -36,7 +36,7 @@ Este repositório contém:
 
 ### 1) Frontend
 
-Copie o exemplo e mantenha `VITE_API_BASE_URL` vazio (recomendado) para usar o proxy do Vite.
+Defina o proxy base apontando para o arquivo .env:
 
 ```bash
 cp .env.example .env
@@ -45,7 +45,7 @@ cp .env.example .env
 Variáveis:
 
 - `VITE_API_BASE_URL`:
-  - vazio (recomendado): o frontend usa `/api` e o Vite faz proxy para `http://127.0.0.1:8000`
+  - `VITE_API_BASE_URL=/api` (recomendado): o frontend usa a rota proxy integrada do Vite para alcançar a API em `http://127.0.0.1:8000` sem erros 404 de catalog.
   - opcional: pode apontar para a API (ex.: `http://127.0.0.1:8000`)
 
 ### 2) Backend

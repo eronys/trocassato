@@ -10,7 +10,7 @@ from ..models import Invitation, User
 from ..schemas import HostApprovalIn, InvitationCreateByHostIn, InvitationOut, PublicUser
 
 
-router = APIRouter(prefix="/api/host", tags=["host"])
+router = APIRouter(prefix="/host", tags=["host"])
 
 
 def _require_host(user: User) -> None:

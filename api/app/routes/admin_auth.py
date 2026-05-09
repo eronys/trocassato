@@ -8,7 +8,7 @@ from ..security import create_token, verify_password
 from ..deps import require_admin
 
 
-router = APIRouter(prefix="/api/admin/auth", tags=["admin-auth"])
+router = APIRouter(prefix="/admin/auth", tags=["admin-auth"])
 
 
 @router.post("/login")

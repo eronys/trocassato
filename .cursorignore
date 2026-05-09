@@ -1,0 +1,15 @@
+# Pastas de dependências e build
+node_modules/
+dist/
+build/
+.next/
+
+# Arquivos de log e sistema
+npm-debug.log*
+yarn-error.log*
+.DS_Store
+
+# Pastas de teste ou arquivos muito grandes que não precisam de análise
+coverage/
+public/assets/  # Se tiver muitas imagens ou vídeos pesados
+ 

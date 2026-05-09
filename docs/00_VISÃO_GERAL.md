@@ -10,7 +10,8 @@ Marketplace com “KYC social” por convite, focado em confiança por reputaç�
 
 ## Conceitos rápidos
 
-- **Convite**: uma pessoa só entra na rede se possuir um token de convite válido.
+- **Convite**: uma pessoa só entra na rede se possuir um token de convite válido. O convite é gerado pedindo apenas Nome e E-mail. O CPF será preenchido pelo próprio convidado no seu processo de registro.
+- **Atualização Dinâmica**: A aplicação possui atualizações em tempo real baseadas em intervalos (refresh automático), de modo que novos cadastros de produtos, novas solicitações e aprovações de convidados aparecem sem que o usuário precise atualizar a página ou relogar.
 - **Status do usuário**:
   - `PENDING_APPROVAL`: aguardando aprovação do anfitrião
   - `APPROVED`: acesso liberado

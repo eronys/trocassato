@@ -12,8 +12,8 @@ Objetivo: cadastrar pessoas, gerar convites e acompanhar uso.
 
 1. Acesse `Admin` → **Pessoas & Convites**
 2. Clique em **Cadastrar pessoa**
-3. Preencha nome, e-mail e CPF (opcional)
-4. Clique em **Gerar link** e copie o link
+3. Preencha apenas o nome e o e-mail do convidado
+4. Clique em **Cadastrar pessoa** e copie o link gerado
 
 ## 3. Aprovar usuários
 

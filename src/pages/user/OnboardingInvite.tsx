@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import Button from "@/components/ui/Button";
@@ -18,6 +18,10 @@ export default function OnboardingInvite() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    document.title = "Trocassato Negócios";
+  }, []);
+
   return (
     <div className="min-h-screen bg-black text-zinc-100">
       <div className="mx-auto flex min-h-screen max-w-md items-center px-4">
@@ -33,7 +37,7 @@ export default function OnboardingInvite() {
               setLoading(true);
               setError(null);
               try {
-                await apiPost("/api/onboarding/finish", {
+                await apiPost("/onboarding/finish", {
                   invite_token: inviteToken,
                   full_name: fullName,
                   email,

@@ -47,10 +47,23 @@ class BusinessItemOut(BaseModel):
   created_at: dt.datetime
 
 
+class BusinessItemListOut(BusinessItemOut):
+  seller_full_name: str
+  seller_level: str
+  seller_stars: int
+
+
 class BusinessItemCreateIn(BaseModel):
   title: str = Field(min_length=1, max_length=50)
   description: str = Field(min_length=1, max_length=200)
   price_brl_cents: int = Field(ge=1)
+  image_url: str | None = Field(default=None, max_length=500)
+
+
+class BusinessItemUpdateIn(BaseModel):
+  title: str | None = Field(default=None, min_length=1, max_length=50)
+  description: str | None = Field(default=None, min_length=1, max_length=200)
+  price_brl_cents: int | None = Field(default=None, ge=1)
   image_url: str | None = Field(default=None, max_length=500)
 
 
@@ -95,24 +108,14 @@ class TransactionOut(BaseModel):
   txid: str | None
   created_at: dt.datetime
   confirmed_at: dt.datetime | None
+  buyer_full_name: str | None = None
+  seller_full_name: str | None = None
+  business_item_title: str | None = None
+  price_brl_cents: int | None = None
 
 
 class CheckoutConfirmIn(BaseModel):
   business_item_id: str
-
-
-class AdminSimulateIn(BaseModel):
-  tx_count: int = Field(ge=1, le=500)
-  min_sats: int = Field(ge=1)
-  max_sats: int = Field(ge=1)
-  product_ids: list[str] = []
-  user_ids: list[str] = []
-  allow_repeat: bool = True
-  respect_star_lock: bool = True
-
-
-class AdminMineIn(BaseModel):
-  blocks: int = Field(ge=1, le=50)
 
 
 class AdminSetUserStatusIn(BaseModel):

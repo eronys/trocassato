@@ -25,6 +25,8 @@ Após o cadastro, você entra como usuário com status `PENDING_APPROVAL`.
 
 - Acesse `Catálogo` para ver os negócios disponíveis.
 - Se você estiver em `STAR_1` (⭐), você poderá navegar, mas algumas ações ficam limitadas.
+- Ao clicar em um negócio, você verá o valor dinamicamente em Satoshis e Reais.
+- Você **não pode** realizar o checkout do seu próprio negócio.
 
 ## 4. Perfil
 
@@ -39,7 +41,7 @@ No `Perfil` você visualiza:
 Para cadastrar negócios:
 
 1. Clique em **Meus negócios**
-2. Preencha Título, Descrição e Valor (BRL)
+2. Preencha Título, Descrição e Valor (BRL). A conversão para Satoshis aparecerá na listagem.
 3. Clique em **Publicar negócio**
 
 Regras:
@@ -49,5 +51,7 @@ Regras:
 
 ## 6. Convites (anfitriões)
 
-Usuários com papel de anfitrião podem acessar `Notificações` para aprovar ou recusar solicitações.
+Usuários com papel de anfitrião podem acessar o menu **Convidar** para gerar convites preenchendo apenas **Nome** e **E-mail**. O CPF será exigido diretamente ao convidado quando o mesmo acessar o link para finalizar seu cadastro.
+Em `Notificações`, o anfitrião pode aprovar ou recusar solicitações pendentes.
+Enquanto um convidado não for aprovado pelo anfitrião, ele terá acesso restrito no sistema, sem menus de "Convidar" e "Meus negócios".
 
